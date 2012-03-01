@@ -19,7 +19,8 @@ namespace OpenWrap.Commands.Wrap
     public class InitWrapCommand : AbstractCommand
     {
         const string MSBUILD_NS = "http://schemas.microsoft.com/developer/msbuild/2003";
-        const string OPENWRAP_BUILD = @"wraps\openwrap\build\OpenWrap.CSharp.targets";
+        const string OPENWRAP_BUILD_CSHARP = @"wraps\openwrap\build\OpenWrap.CSharp.targets";
+        const string OPENWRAP_BUILD_FSHARP = @"wraps\openwrap\build\OpenWrap.CSharp.targets";
         bool? _allProjects;
         string _name;
         IFile _packageDescriptorFile;
@@ -90,6 +91,8 @@ namespace OpenWrap.Commands.Wrap
                 yield return new Warning(@"No project was specified. Either specify -all for all the projects in any folders under the current path, or -Project path\to\project.csproj.");
             }
             _projectsToPatch = All ? GetAllProjects() : GetSpecificProjects();
+            Console.WriteLine("FooBar");
+            _projectsToPatch.ToList().ForEach(x=> Console.WriteLine("==@@{0}", x));
             foreach (var proj in _projectsToPatch.Where(x => x.Exists == false))
                 yield return new Warning("The project at path '{0}' does not exist. Check the path and try again.", proj.Path.FullPath);
 
@@ -161,12 +164,13 @@ namespace OpenWrap.Commands.Wrap
 
         IEnumerable<IFile> GetAllProjects()
         {
-            return Environment.CurrentDirectory.Files("*.csproj", SearchScope.SubFolders);
+            return Environment.CurrentDirectory.Files("*.csproj", SearchScope.SubFolders)
+                .Union(Environment.CurrentDirectory.Files("*.fsproj", SearchScope.SubFolders));
         }
 
-        string GetOpenWrapPath(IDirectory projectPath, IDirectory rootPath)
+        string GetOpenWrapPath(IDirectory projectPath, IDirectory rootPath, string buildTarget)
         {
-            if (projectPath.Path == rootPath.Path) return OPENWRAP_BUILD;
+            if (projectPath.Path == rootPath.Path) return buildTarget;
             int deepness = 1;
 
             for (var current = projectPath;
@@ -176,7 +180,7 @@ namespace OpenWrap.Commands.Wrap
                 if (current.Path == rootPath.Path)
                     return Enumerable.Repeat("..", deepness).JoinString("\\")
                            + "\\"
-                           + OPENWRAP_BUILD;
+                           + buildTarget;
             }
             throw new InvalidOperationException("Could not find a descriptor.");
         }
@@ -192,32 +196,77 @@ namespace OpenWrap.Commands.Wrap
         IEnumerable<ICommandOutput> ModifyProjects(IFile descriptorFile)
         {
             descriptorFile = _packageDescriptorFile ?? descriptorFile;
+            _projectsToPatch.ToList()
+                .ForEach(x=> Console.WriteLine("FileToPath: {0}", x));
             foreach (var project in _projectsToPatch)
             {
-                var xmlDoc = new XmlDocument();
-                var namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
-                namespaceManager.AddNamespace("msbuild", MSBUILD_NS);
+                if (project.Extension.Equals("csproj", StringComparison.InvariantCultureIgnoreCase))
+                    yield return ModifyCSharpProject(project, descriptorFile);
 
-                using (Stream projectFileStream = project.OpenRead())
-                    xmlDoc.Load(projectFileStream);
-                var csharpTarget = (from node in xmlDoc.SelectNodes(@"//msbuild:Import", namespaceManager).OfType<XmlElement>()
-                                    let attr = node.GetAttribute("Project")
-                                    where attr != null && attr.EndsWith("Microsoft.CSharp.targets")
-                                    select node).FirstOrDefault();
-
-                if (csharpTarget == null)
-                    yield return new Info("Project '{0}' was not a recognized csharp project file. Ignoring.", project.Name);
-                else
-                {
-                    // TODO: Detect path of openwrap directory and generate correct relative path from there
-                    csharpTarget.Attributes["Project"].Value = GetOpenWrapPath(project.Parent, descriptorFile.Parent);
-                    using (Stream projectFileStream = project.OpenWrite())
-                        xmlDoc.Save(projectFileStream);
-                    yield return new Info(string.Format("Project '{0}' updated to use OpenWrap.", project.Path.FullPath));
-                }
+                if (project.Extension.Equals("fsproj", StringComparison.InvariantCultureIgnoreCase))
+                    yield return ModifyFSharpProject(project, descriptorFile);
+               yield return new Info("Project '{0}' was not a recognized csharp project file. Ignoring.", project.Name);
             }
         }
 
+        private ICommandOutput ModifyFSharpProject(IFile project, IFile descriptorFile)
+        {
+            var xmlDoc = new XmlDocument();
+            var namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
+            namespaceManager.AddNamespace("msbuild", MSBUILD_NS);
+
+            using (Stream projectFileStream = project.OpenRead())
+                xmlDoc.Load(projectFileStream);
+            var fsharpTargets = (from node in xmlDoc.SelectNodes(@"//msbuild:Import", namespaceManager).OfType<XmlElement>()
+                                let attr = node.GetAttribute("Project")
+                                where attr != null && attr.EndsWith("Microsoft.FSharp.targets")
+                                select node);
+
+            var fsharpTarget = fsharpTargets.FirstOrDefault();
+            if (fsharpTarget == null)
+                return new Info("Project '{0}' was not a recognized fsharp project file. Ignoring.", project.Name);
+            else
+            {
+                // TODO: Detect path of openwrap directory and generate correct relative path from there
+                fsharpTarget.Attributes["Project"].Value = GetOpenWrapPath(project.Parent, descriptorFile.Parent, OPENWRAP_BUILD_FSHARP);
+                using (Stream projectFileStream = project.OpenWrite())
+                    xmlDoc.Save(projectFileStream);
+
+                var enumerator = fsharpTargets.Skip(1).GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    if (enumerator.Current != null)
+                        enumerator.Current.RemoveAll();   
+                }
+
+                return new Info(string.Format("Project '{0}' updated to use OpenWrap.", project.Path.FullPath));
+            }
+        }
+
+        private ICommandOutput ModifyCSharpProject(IFile project, IFile descriptorFile)
+        {
+            var xmlDoc = new XmlDocument();
+            var namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
+            namespaceManager.AddNamespace("msbuild", MSBUILD_NS);
+
+            using (Stream projectFileStream = project.OpenRead())
+                xmlDoc.Load(projectFileStream);
+            var csharpTarget = (from node in xmlDoc.SelectNodes(@"//msbuild:Import", namespaceManager).OfType<XmlElement>()
+                                let attr = node.GetAttribute("Project")
+                                where attr != null && attr.EndsWith("Microsoft.CSharp.targets")
+                                select node).FirstOrDefault();
+
+            if (csharpTarget == null)
+                return new Info("Project '{0}' was not a recognized csharp project file. Ignoring.", project.Name);
+            else
+            {
+                // TODO: Detect path of openwrap directory and generate correct relative path from there
+                csharpTarget.Attributes["Project"].Value = GetOpenWrapPath(project.Parent, descriptorFile.Parent, OPENWRAP_BUILD_CSHARP);
+                using (Stream projectFileStream = project.OpenWrite())
+                    xmlDoc.Save(projectFileStream);
+                return new Info(string.Format("Project '{0}' updated to use OpenWrap.", project.Path.FullPath));
+            }
+        }
 
         IEnumerable<ICommandOutput> SetupDirectoriesAndDescriptor()
         {

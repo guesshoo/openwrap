@@ -133,6 +133,11 @@
   <ItemGroup>
     <Folder Include="VisualStudio\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="OpenWrap.FSharp.targets">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="..\..\build\common.project.properties" />
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
   <PropertyGroup>
