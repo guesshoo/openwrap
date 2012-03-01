@@ -4,7 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using OpenFileSystem.IO;
+using OpenWrap.Extensions;
 using OpenWrap.IO;
 using OpenWrap.PackageManagement;
 using OpenWrap.PackageModel;
@@ -20,7 +23,7 @@ namespace OpenWrap.Commands.Wrap
     {
         const string MSBUILD_NS = "http://schemas.microsoft.com/developer/msbuild/2003";
         const string OPENWRAP_BUILD_CSHARP = @"wraps\openwrap\build\OpenWrap.CSharp.targets";
-        const string OPENWRAP_BUILD_FSHARP = @"wraps\openwrap\build\OpenWrap.CSharp.targets";
+        const string OPENWRAP_BUILD_FSHARP = @"wraps\openwrap\build\OpenWrap.FSharp.targets";
         bool? _allProjects;
         string _name;
         IFile _packageDescriptorFile;
@@ -196,76 +199,90 @@ namespace OpenWrap.Commands.Wrap
         IEnumerable<ICommandOutput> ModifyProjects(IFile descriptorFile)
         {
             descriptorFile = _packageDescriptorFile ?? descriptorFile;
-            _projectsToPatch.ToList()
-                .ForEach(x=> Console.WriteLine("FileToPath: {0}", x));
+          
             foreach (var project in _projectsToPatch)
             {
-                if (project.Extension.Equals("csproj", StringComparison.InvariantCultureIgnoreCase))
+                if (project.Extension.Equals(".csproj", StringComparison.InvariantCultureIgnoreCase))
                     yield return ModifyCSharpProject(project, descriptorFile);
 
-                if (project.Extension.Equals("fsproj", StringComparison.InvariantCultureIgnoreCase))
+                if (project.Extension.Equals(".fsproj", StringComparison.InvariantCultureIgnoreCase))
                     yield return ModifyFSharpProject(project, descriptorFile);
-               yield return new Info("Project '{0}' was not a recognized csharp project file. Ignoring.", project.Name);
+
+               yield return new Info("Project '{0}' was not a recognized csharp or fsharp project file. Ignoring.", project.Name);
             }
         }
 
         private ICommandOutput ModifyFSharpProject(IFile project, IFile descriptorFile)
         {
-            var xmlDoc = new XmlDocument();
-            var namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
-            namespaceManager.AddNamespace("msbuild", MSBUILD_NS);
+            XmlNamespaceManager nsMgr;
+            var xDoc = LoadXmlDocumentWithNamespace(project, out nsMgr);
 
-            using (Stream projectFileStream = project.OpenRead())
-                xmlDoc.Load(projectFileStream);
-            var fsharpTargets = (from node in xmlDoc.SelectNodes(@"//msbuild:Import", namespaceManager).OfType<XmlElement>()
-                                let attr = node.GetAttribute("Project")
-                                where attr != null && attr.EndsWith("Microsoft.FSharp.targets")
-                                select node);
+            var fsharpTargets = (from node in xDoc.XPathSelectElements(@"//msbuild:Import", nsMgr)
+                                 let attr = node.Attribute("Project").Value
+                                 where attr != null && attr.EndsWith("Microsoft.FSharp.Targets")
+                                 select node);
 
             var fsharpTarget = fsharpTargets.FirstOrDefault();
             if (fsharpTarget == null)
                 return new Info("Project '{0}' was not a recognized fsharp project file. Ignoring.", project.Name);
-            else
-            {
-                // TODO: Detect path of openwrap directory and generate correct relative path from there
-                fsharpTarget.Attributes["Project"].Value = GetOpenWrapPath(project.Parent, descriptorFile.Parent, OPENWRAP_BUILD_FSHARP);
-                using (Stream projectFileStream = project.OpenWrite())
-                    xmlDoc.Save(projectFileStream);
+         
+            
+            fsharpTarget.RemoveAll();
+            fsharpTarget.SetAttributeValue("Project", 
+                    GetOpenWrapPath(project.Parent, descriptorFile.Parent, OPENWRAP_BUILD_FSHARP));
 
-                var enumerator = fsharpTargets.Skip(1).GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    if (enumerator.Current != null)
-                        enumerator.Current.RemoveAll();   
-                }
+            fsharpTargets.ToList()
+                .ForEach(x=> x.Remove());
 
-                return new Info(string.Format("Project '{0}' updated to use OpenWrap.", project.Path.FullPath));
-            }
+            SaveXmlToFile(xDoc, project);
+          
+            return new Info(string.Format("Project '{0}' updated to use OpenWrap.", project.Path.FullPath));
+            
         }
 
         private ICommandOutput ModifyCSharpProject(IFile project, IFile descriptorFile)
         {
-            var xmlDoc = new XmlDocument();
-            var namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
-            namespaceManager.AddNamespace("msbuild", MSBUILD_NS);
+            XmlNamespaceManager nsMgr;
+            var xDoc = LoadXmlDocumentWithNamespace(project, out nsMgr);
 
-            using (Stream projectFileStream = project.OpenRead())
-                xmlDoc.Load(projectFileStream);
-            var csharpTarget = (from node in xmlDoc.SelectNodes(@"//msbuild:Import", namespaceManager).OfType<XmlElement>()
-                                let attr = node.GetAttribute("Project")
+            var csharpTarget = (from node in xDoc.XPathSelectElements(@"//msbuild:Import", nsMgr)
+                                let attr = node.Attribute("Project").Value
                                 where attr != null && attr.EndsWith("Microsoft.CSharp.targets")
                                 select node).FirstOrDefault();
 
             if (csharpTarget == null)
                 return new Info("Project '{0}' was not a recognized csharp project file. Ignoring.", project.Name);
-            else
+           
+            // TODO: Detect path of openwrap directory and generate correct relative path from there
+            csharpTarget.SetAttributeValue("Project", GetOpenWrapPath(project.Parent, descriptorFile.Parent, OPENWRAP_BUILD_CSHARP));
+            SaveXmlToFile(xDoc, project);
+            return new Info(string.Format("Project '{0}' updated to use OpenWrap.", project.Path.FullPath));
+            
+        }
+
+        static void SaveXmlToFile(XElement xDoc, IFile file)
+        {
+            using (var stream = file.OpenWrite())
+            using (var writer = XmlWriter.Create(stream))
             {
-                // TODO: Detect path of openwrap directory and generate correct relative path from there
-                csharpTarget.Attributes["Project"].Value = GetOpenWrapPath(project.Parent, descriptorFile.Parent, OPENWRAP_BUILD_CSHARP);
-                using (Stream projectFileStream = project.OpenWrite())
-                    xmlDoc.Save(projectFileStream);
-                return new Info(string.Format("Project '{0}' updated to use OpenWrap.", project.Path.FullPath));
+                xDoc.WriteTo(writer);
             }
+        }
+
+
+        private XElement LoadXmlDocumentWithNamespace(IFile file, out XmlNamespaceManager nsMgr)
+        {
+            using (var stream = file.OpenRead())
+            using (var reader = XmlReader.Create(stream))
+            {
+                XElement root = XElement.Load(reader);
+                XmlNameTable nameTable = reader.NameTable;
+
+                nsMgr = new XmlNamespaceManager(nameTable);
+                nsMgr.AddNamespace("msbuild", MSBUILD_NS);
+                return root;
+            }
+          
         }
 
         IEnumerable<ICommandOutput> SetupDirectoriesAndDescriptor()
