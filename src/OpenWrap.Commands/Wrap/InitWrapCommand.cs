@@ -7,7 +7,6 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using OpenFileSystem.IO;
-using OpenWrap.Extensions;
 using OpenWrap.IO;
 using OpenWrap.PackageManagement;
 using OpenWrap.PackageModel;
