@@ -3,5 +3,5 @@
 [assembly: System.Reflection.AssemblyCopyright("Copyright � naughtyProd Limited 2009-2011")]
 [assembly: System.Reflection.AssemblyTrademark("")]
 [assembly: System.Reflection.AssemblyCulture("")]
-[assembly: System.Reflection.AssemblyVersion("2.0.0.*")]
-[assembly: System.Reflection.AssemblyFileVersion("2.0.0.1")]
+[assembly: System.Reflection.AssemblyVersion("2.0.3.2")]
+[assembly: System.Reflection.AssemblyFileVersion("2.0.3.2")]
