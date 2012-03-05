@@ -37,3 +37,9 @@ reports/*
 build/openwrap/*
 build/*.wrap
 build/wraps/*
+
+## Resharper
+src/*.Resharper
+
+## Wraps
+wraps/openwrap/
