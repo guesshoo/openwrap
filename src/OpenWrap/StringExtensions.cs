@@ -31,6 +31,7 @@ namespace OpenWrap
 
             return builder.ToString();
         }
+
         public static bool ContainsNoCase(this string value, string valueToSearch)
         {
             return value.IndexOf(valueToSearch, StringComparison.OrdinalIgnoreCase) != -1;
@@ -64,12 +65,14 @@ namespace OpenWrap
 
         public static string JoinString<T>(this IEnumerable<T> strings, string separator)
         {
-            return string.Join(separator, strings.Select(_=>_.ToString()).ToArray());
+            return string.Join(separator, strings.Select(_ => _.ToString()).ToArray());
         }
+
         public static string JoinString(this IEnumerable<string> strings, char separator)
         {
             return string.Join(separator + string.Empty, strings.ToArray());
         }
+
         public static bool MatchesHumps(this string name, string value)
         {
             var nameInv = name.ToUpperInvariant();
@@ -77,10 +80,12 @@ namespace OpenWrap
             if (nameInv[0] != valueInv[0]) return false;
             return nameInv.MatchesHumps(0, valueInv, 0);
         }
+
         public static IEnumerable<string> SelectHumps(this string key, IEnumerable<string> values)
         {
             return values.Where(x => key.MatchesHumps(x));
         }
+
         public static IEnumerable<string> SplitCamelCase(this string str)
         {
             var currentValue = new StringBuilder();
@@ -140,6 +145,7 @@ namespace OpenWrap
 
             return value.Trim();
         }
+
         static bool MatchesHumps(this string name, int namePosition, string value, int valuePosition)
         {
             if (valuePosition > value.Length - 1) return false;
@@ -147,6 +153,17 @@ namespace OpenWrap
             return foundPosition != -1 &&
                    (namePosition == name.Length - 1 ||
                     MatchesHumps(name, namePosition + 1, value, foundPosition + 1));
+        }
+
+        static readonly Regex regx_FILE_EXT_UPPERCASE = new Regex(@"(?<Ext>\.[A-Z]{3})$", RegexOptions.Compiled);
+        public static string LowerCaseFileExtension(this string fullPath)
+        {
+            return regx_FILE_EXT_UPPERCASE.Replace(fullPath,
+                                                   match =>
+                                                   {
+                                                       return match.Groups["Ext"].Value.ToLower();
+
+                                                   });
         }
     }
 }

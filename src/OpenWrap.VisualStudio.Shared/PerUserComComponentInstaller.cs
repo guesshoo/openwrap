@@ -128,7 +128,7 @@ namespace OpenWrap.VisualStudio
             if (!Directory.Exists(_basePath))
                 Directory.CreateDirectory(_basePath);
 
-            var assemblyFileName = Path.GetFileName(Type.Assembly.Location);
+            var assemblyFileName = Path.GetFileName(Type.Assembly.Location.LowerCaseFileExtension());
             if (assemblyFileName == null) return null;
 
 
