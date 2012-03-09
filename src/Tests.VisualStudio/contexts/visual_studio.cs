@@ -60,11 +60,13 @@ namespace Tests.VisualStudio.contexts
         public visual_studio()
         {
             ServiceLocator.Clear();
-            Vs2010Path = (string)Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\VisualStudio\10.0\Setup\VS\").GetValue("EnvironmentDirectory") + "devenv.com";
-            Vs2008Path = (string)Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\VisualStudio\9.0\Setup\VS\").GetValue("EnvironmentDirectory") + "devenv.com";
+            Vs2010Path = VisualStudioHelper.GetVisualStudioInstallationDir("10.0") + "devenv.com";
+            Vs2008Path = VisualStudioHelper.GetVisualStudioInstallationDir("9.0") + "devenv.com";
             FileSystem = LocalFileSystem.Instance;
+
             _tempDir = FileSystem.CreateTempDirectory();
             Console.WriteLine("Temp path: " + _tempDir.Path);
+            
             RootDir = _tempDir.GetDirectory("root").MustExist();
             OutDir = _tempDir.GetDirectory("outdir").MustExist();
             ConfigDir = _tempDir.GetDirectory("config").MustExist();

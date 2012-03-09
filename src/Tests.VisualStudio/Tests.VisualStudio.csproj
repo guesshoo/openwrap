@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tests.VisualStudio</RootNamespace>
     <AssemblyName>Tests.VisualStudio</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -58,9 +58,12 @@
     <Compile Include="addin_install\upgrading.cs" />
     <Compile Include="CloseOptions.cs" />
     <Compile Include="contexts\addin_installer.cs" />
+    <Compile Include="contexts\VisualStudioVersion.cs" />
     <Compile Include="contexts\VisualStudioError.cs" />
+    <Compile Include="contexts\VisualStudioHelper.cs" />
     <Compile Include="contexts\visual_studio.cs" />
     <Compile Include="DteExtensions.cs" />
+    <Compile Include="EnvDteConstants.cs" />
     <Compile Include="IOleMessageFilter.cs" />
     <Compile Include="MessageFilter.cs" />
     <Compile Include="resharper\resharper_detects_existing_openwrap_assemblies.cs" />

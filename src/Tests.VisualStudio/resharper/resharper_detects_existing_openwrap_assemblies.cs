@@ -1,6 +1,8 @@
 ﻿extern alias resharper450;
 extern alias resharper500;
 extern alias resharper510;
+extern alias resharper600;
+extern alias resharper610;
 using NUnit.Framework;
 using OpenWrap.SolutionPlugins.VisualStudio.ReSharper;
 using OpenWrap.Testing;
@@ -17,7 +19,8 @@ namespace Tests.VisualStudio.resharper
             given_openwrap_assemblyOf<resharper450::OpenWrap.Resharper.PluginManager>("solution");
             given_openwrap_assemblyOf<resharper500::OpenWrap.Resharper.PluginManager>("solution");
             given_openwrap_assemblyOf<resharper510::OpenWrap.Resharper.PluginManager>("solution");
-
+            given_openwrap_assemblyOf<resharper610::OpenWrap.Resharper.PluginManager>("solution");
+           
             given_solution_addin_com_reg();
             given_solution_file("mySolution.sln", true);
             given_project_2010("MyProject");

@@ -23,7 +23,7 @@ namespace Tests.VisualStudio
 
         public static OutputWindowPane Output(this Windows windows, string name, bool create = false)
         {
-            var output = windows.Item(Constants.vsWindowKindOutput).Object as OutputWindow;
+            var output = windows.Item(EnvDteConstants.vsWindowKindOutput).Object as OutputWindow;
             if (output == null) return null;
             var pane = output.OutputWindowPanes.OfType<OutputWindowPane>().FirstOrDefault(x => x.Name == name);
             if (create && pane == null)
