@@ -137,21 +137,28 @@ namespace Tests.VisualStudio.contexts
 
             ExecuteCommands();
 
-            Type t = Type.GetTypeFromProgID("VisualStudio.DTE.10.0", true);
-            object app = Activator.CreateInstance(t, true);
-            Dte = (DTE2)app;
-            MessageFilter.Register();
+            try
+            {
+                Type t = Type.GetTypeFromProgID("VisualStudio.DTE.10.0", true);
+                object app = Activator.CreateInstance(t, true);
+                Dte = (DTE2)app;
+                MessageFilter.Register();
 
-            Dte.Solution.Open(SlnFile.Path);
-            while (Dte.Solution.IsOpen == false) Thread.Sleep(TimeSpan.FromSeconds(1));
-            foreach (var action in _dteActions)
-                action(Dte);
-            if (waitOnPlugins)
-                Dte.Windows.Output("OpenWrap").WaitForMessage(StartSolutionPlugin.SOLUTION_PLUGINS_STARTED);
-            ReadErrors();
-            ReadOpenWrapOutput();
+                Dte.Solution.Open(SlnFile.Path);
+                while (Dte.Solution.IsOpen == false) Thread.Sleep(TimeSpan.FromSeconds(1));
+                foreach (var action in _dteActions)
+                    action(Dte);
+                if (waitOnPlugins)
+                    Dte.Windows.Output("OpenWrap").WaitForMessage(StartSolutionPlugin.SOLUTION_PLUGINS_STARTED);
+                ReadErrors();
+                ReadOpenWrapOutput();
 
-            foreach (var error in Errors) Console.WriteLine("Error: " + error.Description);
+                foreach (var error in Errors) Console.WriteLine("Error: " + error.Description);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         protected void when_loading_solution_with_plugins()

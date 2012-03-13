@@ -1,175 +1,177 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <OpenWrap-ExportName>commands-net35</OpenWrap-ExportName>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9A57F4E3-A3C0-4AFF-BE34-A2F4FC038FF5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenWrap.Commands</RootNamespace>
-    <AssemblyName>OpenWrap.Commands</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Core\CommandDescriptionOutput.cs" />
-    <Compile Include="Core\CommandGroupResult.cs" />
-    <Compile Include="Core\ConfigurationData.cs" />
-    <Compile Include="Core\ConfigurationUpdated.cs" />
-    <Compile Include="Core\EmptyConfiguration.cs" />
-    <Compile Include="Core\GetConfigurationCommand.cs" />
-    <Compile Include="Core\InvalidProxy.cs" />
-    <Compile Include="Core\RemoveConfigurationCommand.cs" />
-    <Compile Include="Core\SetConfigurationCommand.cs" />
-    <Compile Include="Core\StartSolutionPlugin.cs" />
-    <Compile Include="Errors\FileNotFound.cs" />
-    <Compile Include="Gui\ShowPackageExplorerCommand.cs" />
-    <Compile Include="Gui\InvokeGuiCommand.cs" />
-    <Compile Include="Messages\DirectoryNotFound.cs" />
-    <Compile Include="Messages\IncompleteCredentials.cs" />
-    <Compile Include="Remote\AbstractRemoteCommand.cs" />
-    <Compile Include="Remote\Messages\RemoteAdded.cs" />
-    <Compile Include="Remote\Messages\RemoteEndpointData.cs" />
-    <Compile Include="Remote\Messages\RemoteEndpointReadOnly.cs" />
-    <Compile Include="Remote\Messages\RemoteNameInUse.cs" />
-    <Compile Include="Remote\Messages\RemoteNameInvalid.cs" />
-    <Compile Include="Remote\Messages\RemotePublishEndpointAdded.cs" />
-    <Compile Include="Remote\Messages\RemoteRemoved.cs" />
-    <Compile Include="Remote\Messages\RemoteRepositoryData.cs" />
-    <Compile Include="Remote\Messages\RemoteRepositoryDetailedData.cs" />
-    <Compile Include="Remote\Messages\RemoteUpdated.cs" />
-    <Compile Include="Errors\UnknownRemoteName.cs" />
-    <Compile Include="Remote\SetRemoteCommand.cs" />
-    <Compile Include="Remote\Messages\UnknownEndpointType.cs" />
-    <Compile Include="Wrap\BuildWrapCommand.cs" />
-    <Compile Include="Wrap\ErrorPackageBuilder.cs" />
-    <Compile Include="Wrap\Messages\LockingNotSupported.cs" />
-    <Compile Include="Wrap\LockWrapCommand.cs" />
-    <Compile Include="Wrap\Messages\DependenciesConflictMessage.cs" />
-    <Compile Include="Wrap\Messages\PackageBuilt.cs" />
-    <Compile Include="Wrap\Messages\NotInProject.cs" />
-    <Compile Include="Wrap\Messages\PackageLocked.cs" />
-    <Compile Include="Wrap\Messages\PackageNotFound.cs" />
-    <Compile Include="Wrap\Messages\PackageUnlocked.cs" />
-    <Compile Include="Wrap\Messages\PackageVersionMissing.cs" />
-    <Compile Include="Wrap\NodeExtensions.cs" />
-    <Compile Include="Wrap\SetWrapCommand.cs" />
-    <Compile Include="Wrap\TestWrapCommand.cs" />
-    <Compile Include="Wrap\UnlockWrapCommand.cs" />
-    <Compile Include="Wrap\UpdatePackageVertex.cs" />
-    <Compile Include="Wrap\WrapCommand.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Core\CommandListResult.cs" />
-    <Compile Include="Core\GetHelpCommand.cs" />
-    <Compile Include="NuGet\ConvertNuGet.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Remote\AddRemoteCommand.cs" />
-    <Compile Include="Remote\ListRemoteCommand.cs" />
-    <Compile Include="Wrap\NukeWrapCommand.cs" />
-    <Compile Include="Remote\RemoveRemoteCommand.cs" />
-    <Compile Include="Wrap\AddWrapCommand.cs" />
-    <Compile Include="Wrap\CleanWrapCommand.cs" />
-    <Compile Include="Wrap\ListWrapCommand.cs" />
-    <Compile Include="Wrap\InitWrapCommand.cs" />
-    <Compile Include="Wrap\PublishWrapCommand.cs" />
-    <Compile Include="Wrap\RemoveWrapCommand.cs" />
-    <Compile Include="Wrap\UpdateWrapCommand.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenRasta.Client\OpenRasta.Client.csproj">
-      <Project>{42F90C40-827D-4CF6-B206-EB2315AACDDB}</Project>
-      <Name>OpenRasta.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenWrap.Testing\OpenWrap.Testing.csproj">
-      <Project>{C8271D09-7581-4DC5-B47B-6763062506C2}</Project>
-      <Name>OpenWrap.Testing</Name>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenWrap\OpenWrap.csproj">
-      <Project>{6CE52051-0070-423D-96CB-8B16700A2251}</Project>
-      <Name>OpenWrap</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="CommandDocumentation.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="..\..\build\common.project.properties" />
-  <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+    <PropertyGroup>
+        <OpenWrap-ExportName>commands-net35</OpenWrap-ExportName>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProductVersion>9.0.21022</ProductVersion>
+        <SchemaVersion>2.0</SchemaVersion>
+        <ProjectGuid>{9A57F4E3-A3C0-4AFF-BE34-A2F4FC038FF5}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>OpenWrap.Commands</RootNamespace>
+        <AssemblyName>OpenWrap.Commands</AssemblyName>
+        <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <FileUpgradeFlags>
+        </FileUpgradeFlags>
+        <OldToolsVersion>3.5</OldToolsVersion>
+        <UpgradeBackupLocation />
+        <PublishUrl>publish\</PublishUrl>
+        <Install>true</Install>
+        <InstallFrom>Disk</InstallFrom>
+        <UpdateEnabled>false</UpdateEnabled>
+        <UpdateMode>Foreground</UpdateMode>
+        <UpdateInterval>7</UpdateInterval>
+        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+        <UpdatePeriodically>false</UpdatePeriodically>
+        <UpdateRequired>false</UpdateRequired>
+        <MapFileExtensions>true</MapFileExtensions>
+        <ApplicationRevision>0</ApplicationRevision>
+        <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+        <IsWebBootstrapper>false</IsWebBootstrapper>
+        <UseApplicationTrust>false</UseApplicationTrust>
+        <BootstrapperEnabled>true</BootstrapperEnabled>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+        <PlatformTarget>x86</PlatformTarget>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+        <PlatformTarget>x86</PlatformTarget>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="Core\CommandDescriptionOutput.cs" />
+        <Compile Include="Core\CommandGroupResult.cs" />
+        <Compile Include="Core\ConfigurationData.cs" />
+        <Compile Include="Core\ConfigurationUpdated.cs" />
+        <Compile Include="Core\EmptyConfiguration.cs" />
+        <Compile Include="Core\GetConfigurationCommand.cs" />
+        <Compile Include="Core\InvalidProxy.cs" />
+        <Compile Include="Core\RemoveConfigurationCommand.cs" />
+        <Compile Include="Core\SetConfigurationCommand.cs" />
+        <Compile Include="Core\StartSolutionPlugin.cs" />
+        <Compile Include="Errors\FileNotFound.cs" />
+        <Compile Include="Gui\ShowPackageExplorerCommand.cs" />
+        <Compile Include="Gui\InvokeGuiCommand.cs" />
+        <Compile Include="Messages\DirectoryNotFound.cs" />
+        <Compile Include="Messages\IncompleteCredentials.cs" />
+        <Compile Include="Remote\AbstractRemoteCommand.cs" />
+        <Compile Include="Remote\Messages\RemoteAdded.cs" />
+        <Compile Include="Remote\Messages\RemoteEndpointData.cs" />
+        <Compile Include="Remote\Messages\RemoteEndpointReadOnly.cs" />
+        <Compile Include="Remote\Messages\RemoteNameInUse.cs" />
+        <Compile Include="Remote\Messages\RemoteNameInvalid.cs" />
+        <Compile Include="Remote\Messages\RemotePublishEndpointAdded.cs" />
+        <Compile Include="Remote\Messages\RemoteRemoved.cs" />
+        <Compile Include="Remote\Messages\RemoteRepositoryData.cs" />
+        <Compile Include="Remote\Messages\RemoteRepositoryDetailedData.cs" />
+        <Compile Include="Remote\Messages\RemoteUpdated.cs" />
+        <Compile Include="Errors\UnknownRemoteName.cs" />
+        <Compile Include="Remote\SetRemoteCommand.cs" />
+        <Compile Include="Remote\Messages\UnknownEndpointType.cs" />
+        <Compile Include="Wrap\BuildWrapCommand.cs" />
+        <Compile Include="Wrap\ErrorPackageBuilder.cs" />
+        <Compile Include="Wrap\Messages\LockingNotSupported.cs" />
+        <Compile Include="Wrap\LockWrapCommand.cs" />
+        <Compile Include="Wrap\Messages\DependenciesConflictMessage.cs" />
+        <Compile Include="Wrap\Messages\PackageBuilt.cs" />
+        <Compile Include="Wrap\Messages\NotInProject.cs" />
+        <Compile Include="Wrap\Messages\PackageLocked.cs" />
+        <Compile Include="Wrap\Messages\PackageNotFound.cs" />
+        <Compile Include="Wrap\Messages\PackageUnlocked.cs" />
+        <Compile Include="Wrap\Messages\PackageVersionMissing.cs" />
+        <Compile Include="Wrap\NodeExtensions.cs" />
+        <Compile Include="Wrap\SetWrapCommand.cs" />
+        <Compile Include="Wrap\TestWrapCommand.cs" />
+        <Compile Include="Wrap\UnlockWrapCommand.cs" />
+        <Compile Include="Wrap\UpdatePackageVertex.cs" />
+        <Compile Include="Wrap\WrapCommand.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core">
+            <RequiredTargetFramework>3.5</RequiredTargetFramework>
+        </Reference>
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Core\CommandListResult.cs" />
+        <Compile Include="Core\GetHelpCommand.cs" />
+        <Compile Include="NuGet\ConvertNuGet.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Remote\AddRemoteCommand.cs" />
+        <Compile Include="Remote\ListRemoteCommand.cs" />
+        <Compile Include="Wrap\NukeWrapCommand.cs" />
+        <Compile Include="Remote\RemoveRemoteCommand.cs" />
+        <Compile Include="Wrap\AddWrapCommand.cs" />
+        <Compile Include="Wrap\CleanWrapCommand.cs" />
+        <Compile Include="Wrap\ListWrapCommand.cs" />
+        <Compile Include="Wrap\InitWrapCommand.cs" />
+        <Compile Include="Wrap\PublishWrapCommand.cs" />
+        <Compile Include="Wrap\RemoveWrapCommand.cs" />
+        <Compile Include="Wrap\UpdateWrapCommand.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\OpenRasta.Client\OpenRasta.Client.csproj">
+            <Project>{42F90C40-827D-4CF6-B206-EB2315AACDDB}</Project>
+            <Name>OpenRasta.Client</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\OpenWrap.Testing\OpenWrap.Testing.csproj">
+            <Project>{C8271D09-7581-4DC5-B47B-6763062506C2}</Project>
+            <Name>OpenWrap.Testing</Name>
+            <Private>True</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\OpenWrap\OpenWrap.csproj">
+            <Project>{6CE52051-0070-423D-96CB-8B16700A2251}</Project>
+            <Name>OpenWrap</Name>
+            <Private>False</Private>
+        </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+        <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+            <Install>false</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+            <Visible>False</Visible>
+            <ProductName>Windows Installer 3.1</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="CommandDocumentation.resx">
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup />
+    <Import Project="..\..\build\common.project.properties" />
+    <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   -->
-  <Target Name="AfterBuild">
-    <Message Text="[built(%(BinFile.Export),'%(BinFile.FullPath)')]" />
-  </Target>
+    <Target Name="AfterBuild">
+        <Message Text="[built(%(BinFile.Export),'%(BinFile.FullPath)')]" />
+    </Target>
 </Project>
