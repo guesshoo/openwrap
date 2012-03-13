@@ -9,4 +9,4 @@ depends: Mono.Cecil = 0.9.4
 directory-structure: src\*{scope: Tests=tests}*\**
 directory-structure: src\{scope: Tests.VisualStudio=tests}\**
 depends: openfilesystem = 1.0.1
-version: 2.0.2.87978029
+version: 2.0.2.87978888
