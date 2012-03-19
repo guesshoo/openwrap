@@ -19,7 +19,7 @@ namespace Tests.VisualStudio.contexts
         internal static string GetVisualStudioInstallationDir(string version)
         {
             string registryKeyString = String.Format(@"SOFTWARE{0}Microsoft\VisualStudio\{1}",
-                                                     Environment.Is64BitProcess ? @"\Wow6432Node\" : "",
+                                                      @"\Wow6432Node\" ,
                                                      version);
 
             using (RegistryKey localMachineKey = Registry.LocalMachine.OpenSubKey(registryKeyString))
