@@ -32,6 +32,9 @@ reports/*
 .milestone
 *.bin
 */*.bin
+*.orig
+*/*.orig
+
 
 ## BUILD
 build/openwrap/*

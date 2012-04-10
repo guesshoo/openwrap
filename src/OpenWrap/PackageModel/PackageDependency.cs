@@ -24,20 +24,17 @@ namespace OpenWrap.PackageModel
         public string Name { get; private set; }
 
         public IEnumerable<string> Tags { get; set; }
+
+        // TODO: Remove this implementation detail.
         public IEnumerable<VersionVertex> VersionVertices { get; private set; }
 
         public override string ToString()
         {
-            var versions = VersionVertices.Select(x => x.ToString()).JoinString(" and ");
-            var returnValue = versions.Length == 0
-                                      ? Name
-                                      : Name + " " + versions;
-            if (Tags.Count() > 0)
-                returnValue += " " + Tags.JoinString(" ");
-            return returnValue;
+            return Name.AppendSpace(VersionVertices.Select(x => x.ToString()).JoinString(" and "))
+                .AppendSpace(Tags.JoinString(" "));
         }
 
-        public bool IsFulfilledBy(Version version)
+        public bool IsFulfilledBy(SemanticVersion version)
         {
             return VersionVertices.All(x => x.IsCompatibleWith(version));
         }
