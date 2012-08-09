@@ -45,4 +45,5 @@ build/wraps/*
 src/*.Resharper
 
 ## Wraps
+wraps/*
 wraps/openwrap/
